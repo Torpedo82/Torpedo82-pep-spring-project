@@ -9,11 +9,11 @@ import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.exception.customexceptions.GeneralException;
 
-import java.util.Optional;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessageService {
@@ -24,6 +24,32 @@ public class MessageService {
     public MessageService(MessageRepository messageRepository, AccountRepository accountRepository){
         this.messageRepository = messageRepository;
         this.accountRepository = accountRepository;
+    }
+
+     //obtain all messages from database. always returns 200 OK
+     public ResponseEntity<List<Message>> getAllMessages(){
+        List<Message> messages = (List<Message>) messageRepository.findAll(); 
+
+        return ResponseEntity.status(HttpStatus.OK).body(messages);
+    }
+
+     //obtain message by its id, body can be empty if no message. always returns 200 OK
+     public ResponseEntity<Message> getMessageByid(int id){
+        Optional<Message> message = messageRepository.findById(id);
+
+        if (message.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(message.get());
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
+
+    //Retrieve all messages from a user given their Account id
+    public ResponseEntity<List<Message>> getMessagesByAccountid(int accountid){
+        List<Message> messages = messageRepository.findBypostedBy(accountid);
+
+        return ResponseEntity.status(HttpStatus.OK).body(messages);
     }
 
     //save new messages and on success return 200 OK with saved JSON message, restrictions are
@@ -48,38 +74,6 @@ public class MessageService {
         else{
             throw new GeneralException("Error: Uploaded message must contain text");
         } 
-    }
-
-    //obtain all messages from database. always returns 200 OK
-    public ResponseEntity<List<Message>> getAllMessages(){
-        List<Message> messages = (List<Message>) messageRepository.findAll(); 
-
-        return ResponseEntity.status(HttpStatus.OK).body(messages);
-    }
-
-    //obtain message by its id, body can be empty if no message. always returns 200 OK
-    public ResponseEntity<Message> getMessageByid(int id){
-        Optional<Message> message = messageRepository.findById(id);
-
-        if (message.isPresent()){
-            return ResponseEntity.status(HttpStatus.OK).body(message.get());
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
-    }
-
-    //delete a message, response should always be 200 OK. returns either empty body or 1 row affected
-    public ResponseEntity<Integer> deleteMessageByid(int id){
-        Optional<Message> message = messageRepository.findById(id);
-
-        if (message.isPresent()){
-            messageRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body((Integer) 1);
-        }
-        else{
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        }
     }
 
     //update a message given an id and message_text. return 200 OK with number of rows affected
@@ -108,10 +102,17 @@ public class MessageService {
         }
     }
 
-    //Retrieve all messages from a user given their Account id
-    public ResponseEntity<List<Message>> getMessagesByAccountid(int accountid){
-        List<Message> messages = messageRepository.findBypostedBy(accountid);
+    //delete a message, response should always be 200 OK. returns either empty body or 1 row affected
+    public ResponseEntity<Integer> deleteMessageByid(int id){
+        Optional<Message> message = messageRepository.findById(id);
 
-        return ResponseEntity.status(HttpStatus.OK).body(messages);
+        if (message.isPresent()){
+            messageRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body((Integer) 1);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
     }
+
 }

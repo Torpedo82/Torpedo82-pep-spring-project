@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,12 +16,7 @@ import com.example.entity.Message;
 import com.example.service.AccountService;
 import com.example.service.MessageService;
 
-/**
- * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
- * found in readme.md as well as the test cases. You be required to use the @GET/POST/PUT/DELETE/etc Mapping annotations
- * where applicable as well as the @ResponseBody and @PathVariable annotations. You should
- * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
- */
+
 @RestController
 public class SocialMediaController {
     private final AccountService accountService;
@@ -32,6 +26,21 @@ public class SocialMediaController {
     public SocialMediaController(AccountService accountService, MessageService messageService){
         this.accountService = accountService;
         this.messageService = messageService;
+    }
+
+    @GetMapping(value = "/messages")
+    public ResponseEntity<List<Message>> getAllMessages(){
+        return messageService.getAllMessages();
+    }
+
+    @GetMapping(value = "/messages/{message_id}")
+    public ResponseEntity<Message> getMessageByid(@PathVariable int message_id){
+        return messageService.getMessageByid(message_id);
+    }
+
+    @GetMapping(value = "/accounts/{account_id}/messages")
+    public ResponseEntity<List<Message>> getMessagesByAccountid(@PathVariable int account_id){
+        return messageService.getMessagesByAccountid(account_id);
     }
 
     @PostMapping(value = "/register")
@@ -49,29 +58,14 @@ public class SocialMediaController {
         return messageService.postMessage(requestBody);
     }
 
-    @GetMapping(value = "/messages")
-    public ResponseEntity<List<Message>> getAllMessages(){
-        return messageService.getAllMessages();
-    }
-
-    @GetMapping(value = "/messages/{message_id}")
-    public ResponseEntity<Message> getMessageByid(@PathVariable int message_id){
-        return messageService.getMessageByid(message_id);
-    }
-
-    @DeleteMapping(value = "/messages/{message_id}")
-    public ResponseEntity<Integer> deleteMessageByid(@PathVariable int message_id){
-        return messageService.deleteMessageByid(message_id);
-    }
-
     @PatchMapping(value = "/messages/{message_id}")
     public ResponseEntity<Integer> updateMessageByid(@PathVariable int message_id, @RequestBody Message requestBody){
         return messageService.updateMessageByid(message_id, requestBody);
     }
 
-    @GetMapping(value = "/accounts/{account_id}/messages")
-    public ResponseEntity<List<Message>> getMessagesByAccountid(@PathVariable int account_id){
-        return messageService.getMessagesByAccountid(account_id);
+    @DeleteMapping(value = "/messages/{message_id}")
+    public ResponseEntity<Integer> deleteMessageByid(@PathVariable int message_id){
+        return messageService.deleteMessageByid(message_id);
     }
 
 }
