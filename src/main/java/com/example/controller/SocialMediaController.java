@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,4 +29,10 @@ public class SocialMediaController {
     public ResponseEntity<Account> registerAccount(@RequestBody Account requestBody){
         return accountService.registerAccount(requestBody);
     }
+
+    @PostMapping(value = "/login")
+    public ResponseEntity<Account> loginAccount(@RequestBody Account requestBody){
+        return accountService.loginAccount(requestBody);
+    }
+
 }

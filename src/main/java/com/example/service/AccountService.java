@@ -3,6 +3,7 @@ package com.example.service;
 import com.example.entity.Account;
 import com.example.exception.customexceptions.DuplicateException;
 import com.example.exception.customexceptions.GeneralException;
+import com.example.exception.customexceptions.UnauthorizedException;
 import com.example.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,17 @@ public class AccountService {
             throw new GeneralException("Error: Client request must include a valid username and password");
         }
         
+    }
+
+    //Account login should return 200 OK if successful or else 401 Unauthorized if does not match
+    public ResponseEntity<Account> loginAccount(Account account){
+        Optional<Account> verifiedAccount = accountRepository.findByUsernameAndPassword(account.getUsername(), account.getPassword());
+
+        if (verifiedAccount.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(verifiedAccount.get());
+        }
+        else{
+            throw new UnauthorizedException("Error: Login invalid");
+        }
     }
 }

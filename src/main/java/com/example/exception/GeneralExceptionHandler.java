@@ -20,4 +20,9 @@ public class GeneralExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorizedException(UnauthorizedException ex){
+        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
 }
