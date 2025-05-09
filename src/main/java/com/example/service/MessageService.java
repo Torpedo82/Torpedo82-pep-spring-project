@@ -107,4 +107,11 @@ public class MessageService {
             throw new GeneralException("Error: Message must contain text");
         }
     }
+
+    //Retrieve all messages from a user given their Account id
+    public ResponseEntity<List<Message>> getMessagesByAccountid(int accountid){
+        List<Message> messages = messageRepository.findBypostedBy(accountid);
+
+        return ResponseEntity.status(HttpStatus.OK).body(messages);
+    }
 }
