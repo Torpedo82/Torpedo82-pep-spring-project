@@ -4,6 +4,7 @@ import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,11 @@ public class SocialMediaController {
     @GetMapping(value = "/messages")
     public ResponseEntity<List<Message>> getAllMessages(){
         return messageService.getAllMessages();
+    }
+
+    @GetMapping(value = "/messages/{message_id}")
+    public ResponseEntity<Message> getMessageByid(@PathVariable int message_id){
+        return messageService.getMessageByid(message_id);
     }
 
 }

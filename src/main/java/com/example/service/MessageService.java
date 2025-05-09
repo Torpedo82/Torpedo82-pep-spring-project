@@ -56,4 +56,16 @@ public class MessageService {
 
         return ResponseEntity.status(HttpStatus.OK).body(messages);
     }
+
+    //obtain message by its id, body can be empty if no message. always returns 200 OK
+    public ResponseEntity<Message> getMessageByid(int id){
+        Optional<Message> message = messageRepository.findById(id);
+
+        if (message.isPresent()){
+            return ResponseEntity.status(HttpStatus.OK).body(message.get());
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
 }
