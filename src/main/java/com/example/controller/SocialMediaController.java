@@ -3,10 +3,12 @@ package com.example.controller;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import com.example.entity.Account;
 import com.example.entity.Message;
 import com.example.service.AccountService;
@@ -39,9 +41,14 @@ public class SocialMediaController {
         return accountService.loginAccount(requestBody);
     }
 
-    @PostMapping(value = "messages")
+    @PostMapping(value = "/messages")
     public ResponseEntity<Message> postMessage(@RequestBody Message requestBody){
         return messageService.postMessage(requestBody);
+    }
+
+    @GetMapping(value = "/messages")
+    public ResponseEntity<List<Message>> getAllMessages(){
+        return messageService.getAllMessages();
     }
 
 }

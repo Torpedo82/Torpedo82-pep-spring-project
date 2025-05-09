@@ -13,6 +13,8 @@ import java.util.Optional;
 import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
+import java.util.List;
+
 @Service
 public class MessageService {
     private final MessageRepository messageRepository;
@@ -46,5 +48,12 @@ public class MessageService {
         else{
             throw new GeneralException("Error: Uploaded message must contain text");
         } 
+    }
+
+    //obtain all messages from database. always returns 200 OK
+    public ResponseEntity<List<Message>> getAllMessages(){
+        List<Message> messages = (List<Message>) messageRepository.findAll(); 
+
+        return ResponseEntity.status(HttpStatus.OK).body(messages);
     }
 }
