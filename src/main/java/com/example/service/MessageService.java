@@ -1,4 +1,50 @@
 package com.example.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import com.example.entity.Account;
+import com.example.entity.Message;
+import com.example.exception.customexceptions.GeneralException;
+
+import java.util.Optional;
+import com.example.repository.AccountRepository;
+import com.example.repository.MessageRepository;
+
+@Service
 public class MessageService {
+    private final MessageRepository messageRepository;
+    private final AccountRepository accountRepository;
+
+    @Autowired
+    public MessageService(MessageRepository messageRepository, AccountRepository accountRepository){
+        this.messageRepository = messageRepository;
+        this.accountRepository = accountRepository;
+    }
+
+    //save new messages and on success return 200 OK with saved JSON message, restrictions are
+    //messageText not blank/null, < 255 characters and posted by a real existing user. if failed 400 Client error
+    public ResponseEntity<Message> postMessage(Message message){
+        if (message.getMessageText() != null){
+            if (message.getMessageText().length() < 255 && message.getMessageText().length() > 0){
+                Optional<Account> account = accountRepository.findById(message.getPostedBy());
+
+                if (account.isPresent()){
+                    Message savedMessage = messageRepository.save(message);
+                    return ResponseEntity.status(HttpStatus.OK).body(savedMessage);
+                }
+                else{
+                    throw new GeneralException("Error: Not valid account");
+                }
+            }
+            else{
+                throw new GeneralException("Error: Uploaded message must be a valid character size");
+            }
+        }
+        else{
+            throw new GeneralException("Error: Uploaded message must contain text");
+        } 
+    }
 }

@@ -24,9 +24,8 @@ public class AccountService {
     //Account registration, return JSON of persisted account, else 409 for duplicate, 400 for all else
     //valid account has not empty/null username and password + password length >= 4
     public ResponseEntity<Account> registerAccount(Account account){
-        if (account.getUsername() != null && account.getPassword() != null 
-            && account.getUsername().length() > 0 && account.getPassword().length() >= 4){
-            
+        if (account.getUsername() != null && account.getPassword() != null){
+            if (account.getUsername().length() > 0 && account.getPassword().length() >= 4){
                 Optional<Account> existingAccount = accountRepository.findByUsername(account.getUsername());
 
                 if (existingAccount.isEmpty()){
@@ -37,6 +36,10 @@ public class AccountService {
                     throw new DuplicateException("Error: Account already exists");
                 }
             }
+            else{
+                throw new GeneralException("Error: Client request must include username and passwords of valid lengths");
+            }
+        }
         else{
             throw new GeneralException("Error: Client request must include a valid username and password");
         }

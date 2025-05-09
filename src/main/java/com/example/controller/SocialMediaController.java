@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.entity.Account;
+import com.example.entity.Message;
 import com.example.service.AccountService;
+import com.example.service.MessageService;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -19,10 +21,12 @@ import com.example.service.AccountService;
 @RestController
 public class SocialMediaController {
     private final AccountService accountService;
+    private final MessageService messageService;
 
     @Autowired
-    public SocialMediaController(AccountService accountService){
+    public SocialMediaController(AccountService accountService, MessageService messageService){
         this.accountService = accountService;
+        this.messageService = messageService;
     }
 
     @PostMapping(value = "/register")
@@ -33,6 +37,11 @@ public class SocialMediaController {
     @PostMapping(value = "/login")
     public ResponseEntity<Account> loginAccount(@RequestBody Account requestBody){
         return accountService.loginAccount(requestBody);
+    }
+
+    @PostMapping(value = "messages")
+    public ResponseEntity<Message> postMessage(@RequestBody Message requestBody){
+        return messageService.postMessage(requestBody);
     }
 
 }
