@@ -42,7 +42,7 @@ public class MessageService {
                 }
             }
             else{
-                throw new GeneralException("Error: Uploaded message must be a valid character size");
+                throw new GeneralException("Error: Uploaded message must be a valid character length");
             }
         }
         else{
@@ -79,6 +79,32 @@ public class MessageService {
         }
         else{
             return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
+
+    //update a message given an id and message_text. return 200 OK with number of rows affected
+    //if any error occurs response will be 400 Client error
+    public ResponseEntity<Integer> updateMessageByid(int id, Message message){
+        if (message.getMessageText() != null){
+            if (message.getMessageText().length() > 0 && message.getMessageText().length() < 255){
+                Optional<Message> existingMessage = messageRepository.findById(id);
+
+                if (existingMessage.isPresent()){
+                    Message updatedMessage = existingMessage.get();
+                    updatedMessage.setMessageText(message.getMessageText());
+                    messageRepository.save(updatedMessage);
+                    return ResponseEntity.status(HttpStatus.OK).body((Integer) 1);
+                }
+                else{
+                    throw new GeneralException("Error: Message does not exist");
+                }
+            }
+            else{
+                throw new GeneralException("Error: Message must be a valid character length");
+            }
+        }
+        else{
+            throw new GeneralException("Error: Message must contain text");
         }
     }
 }
