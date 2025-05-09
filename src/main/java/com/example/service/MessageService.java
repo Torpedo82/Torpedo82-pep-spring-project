@@ -68,4 +68,17 @@ public class MessageService {
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
     }
+
+    //delete a message, response should always be 200 OK. returns either empty body or 1 row affected
+    public ResponseEntity<Integer> deleteMessageByid(int id){
+        Optional<Message> message = messageRepository.findById(id);
+
+        if (message.isPresent()){
+            messageRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body((Integer) 1);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+    }
 }

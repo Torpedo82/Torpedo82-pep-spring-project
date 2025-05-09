@@ -3,6 +3,7 @@ package com.example.controller;
 import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +56,11 @@ public class SocialMediaController {
     @GetMapping(value = "/messages/{message_id}")
     public ResponseEntity<Message> getMessageByid(@PathVariable int message_id){
         return messageService.getMessageByid(message_id);
+    }
+
+    @DeleteMapping(value = "/messages/{message_id}")
+    public ResponseEntity<Integer> deleteMessageByid(@PathVariable int message_id){
+        return messageService.deleteMessageByid(message_id);
     }
 
 }
