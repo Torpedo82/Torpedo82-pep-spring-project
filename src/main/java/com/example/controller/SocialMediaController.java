@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,42 +31,42 @@ public class SocialMediaController {
 
     @GetMapping(value = "/messages")
     public ResponseEntity<List<Message>> getAllMessages(){
-        return messageService.getAllMessages();
+        return ResponseEntity.status(HttpStatus.OK).body(messageService.getAllMessages());
     }
 
     @GetMapping(value = "/messages/{message_id}")
     public ResponseEntity<Message> getMessageByid(@PathVariable int message_id){
-        return messageService.getMessageByid(message_id);
+        return ResponseEntity.status(HttpStatus.OK).body(messageService.getMessageByid(message_id));
     }
 
     @GetMapping(value = "/accounts/{account_id}/messages")
     public ResponseEntity<List<Message>> getMessagesByAccountid(@PathVariable int account_id){
-        return messageService.getMessagesByAccountid(account_id);
+        return ResponseEntity.status(HttpStatus.OK).body(messageService.getMessagesByAccountid(account_id));
     }
 
     @PostMapping(value = "/register")
     public ResponseEntity<Account> registerAccount(@RequestBody Account requestBody){
-        return accountService.registerAccount(requestBody);
+        return ResponseEntity.status(HttpStatus.OK).body(accountService.registerAccount(requestBody));
     }
 
     @PostMapping(value = "/login")
     public ResponseEntity<Account> loginAccount(@RequestBody Account requestBody){
-        return accountService.loginAccount(requestBody);
+        return ResponseEntity.status(HttpStatus.OK).body(accountService.loginAccount(requestBody));
     }
 
     @PostMapping(value = "/messages")
     public ResponseEntity<Message> postMessage(@RequestBody Message requestBody){
-        return messageService.postMessage(requestBody);
+        return ResponseEntity.status(HttpStatus.OK).body(messageService.postMessage(requestBody));
     }
 
     @PatchMapping(value = "/messages/{message_id}")
     public ResponseEntity<Integer> updateMessageByid(@PathVariable int message_id, @RequestBody Message requestBody){
-        return messageService.updateMessageByid(message_id, requestBody);
+        return ResponseEntity.status(HttpStatus.OK).body(messageService.updateMessageByid(message_id, requestBody));
     }
 
     @DeleteMapping(value = "/messages/{message_id}")
     public ResponseEntity<Integer> deleteMessageByid(@PathVariable int message_id){
-        return messageService.deleteMessageByid(message_id);
+        return ResponseEntity.status(HttpStatus.OK).body(messageService.deleteMessageByid(message_id));
     }
 
 }

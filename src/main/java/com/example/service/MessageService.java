@@ -1,9 +1,8 @@
 package com.example.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
@@ -15,6 +14,7 @@ import com.example.repository.MessageRepository;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class MessageService {
     private final MessageRepository messageRepository;
@@ -27,41 +27,40 @@ public class MessageService {
     }
 
      //obtain all messages from database. always returns 200 OK
-     public ResponseEntity<List<Message>> getAllMessages(){
+     public List<Message> getAllMessages(){
         List<Message> messages = (List<Message>) messageRepository.findAll(); 
 
-        return ResponseEntity.status(HttpStatus.OK).body(messages);
+        return messages;
     }
 
      //obtain message by its id, body can be empty if no message. always returns 200 OK
-     public ResponseEntity<Message> getMessageByid(int id){
+     public Message getMessageByid(int id){
         Optional<Message> message = messageRepository.findById(id);
-
+        
         if (message.isPresent()){
-            return ResponseEntity.status(HttpStatus.OK).body(message.get());
+            return message.get();
         }
         else{
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return null;
         }
     }
 
     //Retrieve all messages from a user given their Account id
-    public ResponseEntity<List<Message>> getMessagesByAccountid(int accountid){
+    public List<Message> getMessagesByAccountid(int accountid){
         List<Message> messages = messageRepository.findBypostedBy(accountid);
 
-        return ResponseEntity.status(HttpStatus.OK).body(messages);
+        return messages;
     }
 
     //save new messages and on success return 200 OK with saved JSON message, restrictions are
     //messageText not blank/null, < 255 characters and posted by a real existing user. if failed 400 Client error
-    public ResponseEntity<Message> postMessage(Message message){
+    public Message postMessage(Message message){
         if (message.getMessageText() != null){
             if (message.getMessageText().length() < 255 && message.getMessageText().length() > 0){
                 Optional<Account> account = accountRepository.findById(message.getPostedBy());
 
                 if (account.isPresent()){
-                    Message savedMessage = messageRepository.save(message);
-                    return ResponseEntity.status(HttpStatus.OK).body(savedMessage);
+                    return messageRepository.save(message);
                 }
                 else{
                     throw new GeneralException("Error: Not valid account");
@@ -78,7 +77,7 @@ public class MessageService {
 
     //update a message given an id and message_text. return 200 OK with number of rows affected
     //if any error occurs response will be 400 Client error
-    public ResponseEntity<Integer> updateMessageByid(int id, Message message){
+    public Integer updateMessageByid(int id, Message message){
         if (message.getMessageText() != null){
             if (message.getMessageText().length() > 0 && message.getMessageText().length() < 255){
                 Optional<Message> existingMessage = messageRepository.findById(id);
@@ -87,7 +86,7 @@ public class MessageService {
                     Message updatedMessage = existingMessage.get();
                     updatedMessage.setMessageText(message.getMessageText());
                     messageRepository.save(updatedMessage);
-                    return ResponseEntity.status(HttpStatus.OK).body((Integer) 1);
+                    return 1;
                 }
                 else{
                     throw new GeneralException("Error: Message does not exist");
@@ -103,15 +102,15 @@ public class MessageService {
     }
 
     //delete a message, response should always be 200 OK. returns either empty body or 1 row affected
-    public ResponseEntity<Integer> deleteMessageByid(int id){
+    public Integer deleteMessageByid(int id){
         Optional<Message> message = messageRepository.findById(id);
 
         if (message.isPresent()){
             messageRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body((Integer) 1);
+            return 1;
         }
         else{
-            return ResponseEntity.status(HttpStatus.OK).body(null);
+            return null;
         }
     }
 
